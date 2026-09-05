@@ -5,165 +5,184 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asim Tech — Caller ID & Spam Protection</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Helvetica,sans-serif;background:#eef4fb;color:#14213d}
-button,input{font:inherit}
-button{border:0;cursor:pointer}
-.app{max-width:430px;min-height:100vh;margin:auto;background:#f7faff;padding-bottom:82px}
-.header{background:linear-gradient(145deg,#075ff5,#0795f5);color:#fff;padding:28px 18px 22px;border-radius:0 0 30px 30px}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:52px;height:52px;border:2px solid #8bdcff;border-radius:50%;display:grid;place-items:center;font-size:27px;background:#ffffff18}
-.brand h1{font-size:30px;line-height:1}
-.brand small{display:block;margin-top:5px;font-size:12px;opacity:.9}
-.head-icons{margin-left:auto;font-size:22px;display:flex;gap:12px}
-.tagline{font-size:15px;margin:18px 0 14px}
-.website{display:inline-block;background:#0059d8aa;padding:7px 11px;border-radius:18px;font-size:12px}
-.searchbox{display:flex;background:#fff;border-radius:18px;padding:5px;margin-top:18px;box-shadow:0 8px 22px #0048b733}
-.searchbox input{width:100%;border:0;outline:0;padding:13px 10px;color:#25334a}
-.searchbox button{background:#0968f5;color:#fff;padding:0 18px;border-radius:14px;font-weight:bold}
-.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:17px 12px}
-.action{border-radius:17px;padding:15px 5px;text-align:center;font-weight:bold;font-size:12px;box-shadow:0 4px 12px #17213d12}
-.action span{display:grid;place-items:center;width:42px;height:42px;margin:0 auto 8px;border-radius:50%;font-size:22px;background:#fff}
-.a1{background:#e3f0ff;color:#075dd8}.a2{background:#ffe8ea;color:#e6323d}.a3{background:#e2f8ed;color:#07864a}.a4{background:#eee7ff;color:#6540d8}
-.banner{margin:0 12px 15px;padding:19px;border-radius:22px;background:linear-gradient(135deg,#e6f3ff,#d9edff);position:relative;overflow:hidden}
-.banner h2{font-size:22px;color:#114a9c;line-height:1.15}.banner p{margin-top:8px;color:#58708d;font-size:13px;line-height:1.45}
-.checks{margin-top:10px;font-size:12px;color:#24527f;line-height:1.9}
-.panel{margin:0 12px 15px;background:#fff;border-radius:22px;padding:17px;box-shadow:0 4px 16px #17213d10}
-.panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panel-title h2{font-size:20px}.panel-title button{background:none;color:#0869ef;font-size:13px}
-.call{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid #edf0f4;gap:11px}.call:last-child{border-bottom:0}
-.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:#eaf2fb;font-size:20px}
-.callinfo{flex:1}.name{font-weight:bold;font-size:15px}.num{font-size:12px;color:#66758a;margin-top:4px}.badge{display:inline-block;margin-top:5px;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:bold}.bad{background:#ffe1e3;color:#e6323d}.good{background:#dff7e8;color:#07864a}
-.callbtn{background:none;font-size:20px;color:#536174}
-.result{display:none;margin:0 12px 15px;background:#fff;border-radius:22px;padding:18px;box-shadow:0 5px 18px #17213d15}
-.result.show{display:block}
-.resulttop{display:flex;align-items:center;gap:12px}.risk{margin-left:auto;text-align:center}.score{font-size:25px;font-weight:800}.rlabel{font-size:10px;color:#69778a}
-.result h2{font-size:19px}.result .number{color:#68778a;font-size:13px;margin-top:3px}
-.reason{margin-top:14px;padding:12px;border-radius:14px;background:#fff4f4;color:#9d3035;font-size:12px;line-height:1.5}
-.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.result-actions button{padding:11px;border-radius:12px;font-weight:bold}.report{background:#ffe6e7;color:#d52f37}.block{background:#e8f0ff;color:#075dd8}
-.empty{display:none;text-align:center;color:#69778a;font-size:13px;padding:15px}.empty.show{display:block}
-.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:70px;background:#fff;border-top:1px solid #e6ebf1;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -4px 18px #17213d12;z-index:10}
-.nav{text-align:center;color:#69778a;font-size:11px}.nav span{display:block;font-size:22px;margin-bottom:4px}.nav.active{color:#0869ef;font-weight:bold}
-.toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%) translateY(15px);background:#14213d;color:#fff;padding:11px 16px;border-radius:14px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:20}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+.container{max-width:520px;margin:auto;padding:18px}
+.header{background:linear-gradient(135deg,#111827,#2563eb);color:#fff;border-radius:24px;padding:22px;margin-bottom:16px;box-shadow:0 12px 30px rgba(37,99,235,.2)}
+.brand{font-size:26px;font-weight:800}.tag{font-size:13px;opacity:.85;margin-top:4px}
+.search{display:flex;gap:8px;margin-top:18px}
+input{flex:1;border:0;border-radius:14px;padding:15px;font-size:16px;outline:none}
+button{border:0;border-radius:14px;padding:13px 16px;font-weight:700;cursor:pointer}
+.search button{background:#fff;color:#1d4ed8}
+.card{background:#fff;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 6px 20px rgba(15,23,42,.07)}
+.result{display:none}
+.score{font-size:42px;font-weight:800}.safe{color:#16a34a}.danger{color:#dc2626}.warn{color:#d97706}
+.badge{display:inline-block;padding:7px 11px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-weight:700;font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.actions button{background:#eef2ff;color:#3730a3}
+.safety{background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe}
+.item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+.item:last-child{border-bottom:0}
+.small{font-size:12px;color:#64748b}
+#status{font-size:13px;margin-top:10px;color:#475569}
+.footer{text-align:center;color:#64748b;font-size:12px;padding:20px}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="header">
-  <div class="brand">
-    <div class="logo">☎</div>
-    <div><h1>Asim Tech</h1><small>Caller ID & Spam Protection</small></div>
-    <div class="head-icons">🔔 ⚙️</div>
+<div class="container">
+  <div class="header">
+    <div class="brand">Asim Tech</div>
+    <div class="tag">Caller ID & Spam Protection</div>
+    <div class="small" style="color:#dbeafe;margin-top:5px">www.asimtech.in</div>
+    <div class="search">
+      <input id="numberInput" type="tel" inputmode="numeric" maxlength="10" placeholder="Search 10-digit number">
+      <button id="searchBtn">Search</button>
+    </div>
+    <div id="status"></div>
   </div>
-  <div class="tagline">Know who's calling, stay safe.</div>
-  <div class="website">🌐 www.asimtech.in</div>
-  <div class="searchbox">
-    <input id="searchInput" type="tel" placeholder="Search any number...">
-    <button onclick="searchNumber()">Search</button>
+
+  <div class="card safety">
+    <b>🛡️ Stay Safe with Asim Tech</b>
+    <div class="small" style="margin-top:6px">Check a number before trusting unknown callers.</div>
   </div>
-</header>
 
-<section class="actions">
-  <button class="action a1" onclick="focusSearch()"><span>🔎</span>Search Number</button>
-  <button class="action a2" onclick="reportCurrent()"><span>🛡️</span>Report Spam</button>
-  <button class="action a3" onclick="blockCurrent()"><span>🚫</span>Block Number</button>
-  <button class="action a4" onclick="saveCurrent()"><span>👤</span>Save Contact</button>
-</section>
-
-<section class="banner">
-  <h2>Stay Safe with<br>Asim Tech</h2>
-  <p>Community-powered Caller ID and Spam Protection.</p>
-  <div class="checks">✓ Identify callers &nbsp; ✓ Block spam &nbsp; ✓ Stay secure</div>
-</section>
-
-<section id="result" class="result">
-  <div class="resulttop">
-    <div class="avatar" id="resultAvatar">🛡️</div>
-    <div><h2 id="resultName">Unknown Number</h2><div class="number" id="resultNumber"></div></div>
-    <div class="risk"><div class="score" id="score">0</div><div class="rlabel">RISK SCORE</div></div>
+  <div id="result" class="card result">
+    <div class="small">NUMBER</div>
+    <h2 id="resultName" style="margin:6px 0"></h2>
+    <div id="resultCategory" class="badge"></div>
+    <div style="margin-top:15px" class="small">COMMUNITY RISK SCORE</div>
+    <div id="resultScore" class="score"></div>
+    <div id="resultReports" class="small"></div>
+    <div class="actions">
+      <button id="reportBtn">🚨 Report Spam</button>
+      <button id="blockBtn">🚫 Block</button>
+      <button id="saveBtn">💾 Save Contact</button>
+      <button id="clearBtn">✕ Clear</button>
+    </div>
   </div>
-  <div id="reason" class="reason"></div>
-  <div class="result-actions">
-    <button class="report" onclick="reportCurrent()">⚠ Report Spam</button>
-    <button class="block" onclick="blockCurrent()">🚫 Block Number</button>
-  </div>
-</section>
 
-<section class="panel">
-  <div class="panel-title"><h2>Recent Calls</h2><button onclick="showAll()">See all ›</button></div>
-  <div id="calls"></div>
-  <div id="empty" class="empty">No recent calls found.</div>
-</section>
+  <div class="card">
+    <b>⚡ Quick Actions</b>
+    <div class="actions">
+      <button onclick="focusSearch()">🔎 Search Number</button>
+      <button onclick="reportCurrent()">🚨 Report Spam</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <b>📞 Recent Calls</b>
+    <div id="recent">
+      <div class="item"><div><b>9876543210</b><div class="small">Telemarketing</div></div><span class="danger">92/100</span></div>
+      <div class="item"><div><b>9123456789</b><div class="small">Rakesh Sharma</div></div><span class="safe">8/100</span></div>
+      <div class="item"><div><b>9988766554</b><div class="small">Loan Offer</div></div><span class="danger">88/100</span></div>
+    </div>
+  </div>
+
+  <div class="footer">Asim Tech • Community-powered caller safety</div>
 </div>
 
-<nav class="bottom">
-  <div class="nav active"><span>⌂</span>Home</div>
-  <div class="nav"><span>◷</span>History</div>
-  <div class="nav"><span>🛡</span>Spam</div>
-  <div class="nav"><span>♙</span>Contacts</div>
-</nav>
-<div id="toast" class="toast"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, serverTimestamp, runTransaction }
+  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getAuth, signInAnonymously }
+  from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-<script>
-const db = {
- "9876543210": {name:"Telemarketing", score:92, type:"Spam", reports:127, reason:"127 users reported this number. Most reports are related to telemarketing calls."},
- "9123456789": {name:"Rakesh Sharma", score:8, type:"Safe Number", reports:0, reason:"No significant spam reports found in the demo database."},
- "9988766554": {name:"Loan Offer", score:88, type:"Spam", reports:84, reason:"Frequently reported as a loan-offer number in the demo database."},
- "9001234567": {name:"Maa", score:3, type:"Saved Contact", reports:0, reason:"This number is marked as a saved contact."}
+const firebaseConfig = {
+  apiKey: "AIzaSyD725nFGXJm_tJhZYhQPa6ogHNMz5flm6E",
+  authDomain: "asim-tech.firebaseapp.com",
+  projectId: "asim-tech",
+  storageBucket: "asim-tech.firebasestorage.app",
+  messagingSenderId: "16953205315",
+  appId: "1:16953205315:web:d72affe5ec9c75130a6af6"
 };
-let currentNumber="";
 
-function digits(v){return (v||"").replace(/\D/g,"").slice(-10)}
-function focusSearch(){document.getElementById("searchInput").focus();window.scrollTo({top:0,behavior:"smooth"})}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-function searchNumber(){
- const raw=document.getElementById("searchInput").value;
- const n=digits(raw);
- if(n.length<10){toast("Please enter a valid 10-digit number");return}
- currentNumber=n;
- const d=db[n] || {name:"Unknown Number",score:35,type:"Unknown",reports:0,reason:"No community data is available yet. Be careful with unexpected requests for OTP, PIN or money."};
- document.getElementById("resultName").textContent=d.name;
- document.getElementById("resultNumber").textContent="+91 "+n;
- document.getElementById("score").textContent=d.score+"/100";
- document.getElementById("score").style.color=d.score>=70?"#e6323d":d.score>=40?"#d08a00":"#07864a";
- document.getElementById("resultAvatar").textContent=d.score>=70?"🛡️":"👤";
- document.getElementById("reason").innerHTML="<b>"+d.type+"</b><br>"+d.reason+(d.reports?("<br>Community reports: "+d.reports):"");
- document.getElementById("result").classList.add("show");
- document.getElementById("result").scrollIntoView({behavior:"smooth",block:"center"});
+let currentNumber = "";
+let currentData = null;
+
+const demo = {
+  "9876543210": {name:"Telemarketing", category:"Spam", score:92, reports:127},
+  "9123456789": {name:"Rakesh Sharma", category:"Safe Number", score:8, reports:2},
+  "9988766554": {name:"Loan Offer", category:"Spam", score:88, reports:84},
+  "9001234567": {name:"Maa", category:"Saved Contact", score:3, reports:0}
+};
+
+const $ = id => document.getElementById(id);
+
+function normalize(v){ return (v||"").replace(/\D/g,"").slice(-10); }
+function setStatus(t){ $("status").textContent=t; }
+function scoreClass(s){ return s>=70 ? "danger" : s>=40 ? "warn" : "safe"; }
+
+function showResult(number, data){
+  currentNumber=number; currentData=data;
+  $("result").style.display="block";
+  $("resultName").textContent=data.name || "Unknown Number";
+  $("resultCategory").textContent=data.category || (data.score>=70?"Spam Risk":"Unclassified");
+  $("resultScore").textContent=(data.score ?? 50)+"/100";
+  $("resultScore").className="score "+scoreClass(data.score ?? 50);
+  $("resultReports").textContent=`${data.reports || 0} community report(s)`;
 }
 
-function reportCurrent(){
- if(!currentNumber){focusSearch();toast("Search a number first");return}
- if(!db[currentNumber]) db[currentNumber]={name:"Reported Number",score:65,type:"Reported Spam",reports:1,reason:"You reported this number. More community reports will improve the risk estimate."};
- else {db[currentNumber].reports++;db[currentNumber].score=Math.min(100,db[currentNumber].score+3);db[currentNumber].type="Reported Spam";}
- searchNumber();toast("Spam report saved");
+async function ensureAuth(){
+  if(!auth.currentUser) await signInAnonymously(auth);
 }
-function blockCurrent(){if(!currentNumber){focusSearch();toast("Search a number first");return}localStorage.setItem("blocked_"+currentNumber,"1");toast("Number blocked on this device")}
-function saveCurrent(){if(!currentNumber){focusSearch();toast("Search a number first");return}localStorage.setItem("contact_"+currentNumber,"1");toast("Contact saved on this device")}
-function showAll(){toast("Showing your recent calls")}
-function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),2200)}
 
-const recent=[
- ["Telemarketing","9876543210","10:20 AM",true],
- ["Rakesh Sharma","9123456789","09:45 AM",false],
- ["Loan Offer","9988766554","Yesterday",true],
- ["Maa","9001234567","Yesterday",false]
-];
-
-function renderCalls(){
- const box=document.getElementById("calls");box.innerHTML="";
- recent.forEach(c=>{
-  const d=db[c[1]];
-  const div=document.createElement("div");div.className="call";
-  div.innerHTML=`<div class="avatar">${c[3]?"🛡️":"👤"}</div>
-  <div class="callinfo"><div class="name">${c[0]}</div>
-  <div class="num">+91 ${c[1]} · ${c[2]}</div>
-  <span class="badge ${c[3]?"bad":"good"}">${c[3]?"Spam":"Safe Number"}</span></div>
-  <button class="callbtn" onclick="quickSearch('${c[1]}')">📞</button>`;
-  box.appendChild(div);
- });
+async function searchNumber(){
+  const n=normalize($("numberInput").value);
+  if(n.length!==10){ setStatus("Please enter a valid 10-digit number."); return; }
+  setStatus("Searching Firebase...");
+  try{
+    const snap=await getDoc(doc(db,"numbers",n));
+    if(snap.exists()) showResult(n,snap.data());
+    else if(demo[n]) showResult(n,demo[n]);
+    else showResult(n,{name:"Unknown Number",category:"Not yet classified",score:50,reports:0});
+    setStatus("Search complete.");
+  }catch(e){
+    console.error(e);
+    if(demo[n]) showResult(n,demo[n]);
+    else showResult(n,{name:"Unknown Number",category:"Database unavailable",score:50,reports:0});
+    setStatus("Firebase read is not allowed yet. We will fix the database rules next.");
+  }
 }
-function quickSearch(n){document.getElementById("searchInput").value="+91 "+n;searchNumber()}
-renderCalls();
+
+async function reportSpam(){
+  if(!currentNumber){ setStatus("Search a number first."); return; }
+  try{
+    await ensureAuth();
+    const ref=doc(db,"numbers",currentNumber);
+    await runTransaction(db, async tx=>{
+      const snap=await tx.get(ref);
+      if(snap.exists()){
+        const d=snap.data();
+        const oldScore=Number(d.score ?? 50);
+        const newScore=Math.min(100, oldScore+5);
+        tx.update(ref,{reports:increment(1),score:newScore,updatedAt:serverTimestamp()});
+      }else{
+        tx.set(ref,{name:"Unknown Number",category:"Community Report",score:65,reports:1,updatedAt:serverTimestamp()});
+      }
+    });
+    const snap=await getDoc(ref);
+    showResult(currentNumber,snap.data());
+    setStatus("Spam report saved to Firebase.");
+  }catch(e){
+    console.error(e);
+    setStatus("Report could not be saved yet. Firebase Authentication/Rules need one setup step.");
+  }
+}
+
+$("searchBtn").onclick=searchNumber;
+$("numberInput").addEventListener("keydown",e=>{if(e.key==="Enter")searchNumber()});
+$("reportBtn").onclick=reportSpam;
+$("blockBtn").onclick=()=>{ if(currentNumber){localStorage.setItem("blocked_"+currentNumber,"1");setStatus("Number blocked on this device.");}};
+$("saveBtn").onclick=()=>{ if(currentNumber){localStorage.setItem("saved_"+currentNumber,"1");setStatus("Number saved on this device.");}};
+$("clearBtn").onclick=()=>{$("result").style.display="none";currentNumber="";currentData=null;setStatus("")};
+
+window.focusSearch=()=>{ $("numberInput").focus(); window.scrollTo({top:0,behavior:"smooth"}); };
+window.reportCurrent=reportSpam;
 </script>
 </body>
 </html>
