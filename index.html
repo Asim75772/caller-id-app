@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caller ID App</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f2f6fb;
+    color:#172033;
+}
+
+.app{
+    max-width:430px;
+    min-height:100vh;
+    margin:auto;
+    background:#fff;
+}
+
+.header{
+    background:linear-gradient(145deg,#087cff,#1262e8);
+    color:white;
+    padding:35px 22px 28px;
+    border-radius:0 0 28px 28px;
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.top h1{
+    font-size:30px;
+}
+
+.icons{
+    font-size:25px;
+}
+
+.subtitle{
+    margin-top:6px;
+    font-size:16px;
+    opacity:.9;
+}
+
+.search{
+    margin-top:25px;
+    background:white;
+    color:#788494;
+    padding:16px 18px;
+    border-radius:18px;
+    font-size:16px;
+    box-shadow:0 5px 20px #0055aa30;
+}
+
+.actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    padding:20px 14px;
+}
+
+.action{
+    padding:17px 5px;
+    border-radius:17px;
+    text-align:center;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.action span{
+    display:block;
+    font-size:27px;
+    margin-bottom:8px;
+}
+
+.blue{background:#087cff}
+.red{background:#ff4148}
+.green{background:#20bd68}
+.purple{background:#7654ed}
+
+.banner{
+    margin:5px 14px 20px;
+    padding:22px;
+    border-radius:22px;
+    background:#e8f3ff;
+}
+
+.banner h2{
+    color:#123e76;
+    font-size:23px;
+    line-height:1.2;
+}
+
+.banner p{
+    margin-top:10px;
+    color:#52647a;
+    line-height:1.4;
+}
+
+.calls{
+    margin:0 14px 90px;
+    padding:18px;
+    border-radius:22px;
+    box-shadow:0 3px 15px #00000010;
+}
+
+.call-title{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+}
+
+.call-title h2{
+    font-size:20px;
+}
+
+.call-title a{
+    color:#087cff;
+}
+
+.call{
+    display:flex;
+    align-items:center;
+    padding:13px 0;
+    border-bottom:1px solid #eee;
+}
+
+.avatar{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#edf2f7;
+    margin-right:12px;
+    font-size:22px;
+}
+
+.call-info{
+    flex:1;
+}
+
+.name{
+    font-weight:bold;
+    font-size:16px;
+}
+
+.number{
+    margin-top:5px;
+    color:#687789;
+    font-size:13px;
+}
+
+.spam{
+    color:#f04444;
+}
+
+.bottom{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(430px,100%);
+    height:72px;
+    background:white;
+    border-top:1px solid #eee;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.nav{
+    text-align:center;
+    color:#687789;
+    font-size:12px;
+}
+
+.nav span{
+    display:block;
+    font-size:23px;
+    margin-bottom:4px;
+}
+
+.active{
+    color:#087cff;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <div class="top">
+        <h1>Hello!</h1>
+        <div class="icons">🔔 ⚙️</div>
+    </div>
+
+    <div class="subtitle">
+        Know who's calling, stay safe.
+    </div>
+
+    <div class="search">
+        🔍 &nbsp; Search any number...
+    </div>
+</header>
+
+<section class="actions">
+
+    <div class="action blue">
+        <span>📞</span>
+        Search
+    </div>
+
+    <div class="action red">
+        <span>🛡️</span>
+        Report Spam
+    </div>
+
+    <div class="action green">
+        <span>🚫</span>
+        Block
+    </div>
+
+    <div class="action purple">
+        <span>👤</span>
+        Save
+    </div>
+
+</section>
+
+<section class="banner">
+    <h2>Stay Safe<br>from Spam Calls</h2>
+    <p>
+        Community-powered caller ID
+        and spam protection.
+    </p>
+</section>
+
+<section class="calls">
+
+    <div class="call-title">
+        <h2>Recent Calls</h2>
+        <a>See all</a>
+    </div>
+
+    <div class="call">
+        <div class="avatar">🛡️</div>
+        <div class="call-info">
+            <div class="name spam">Telemarketing</div>
+            <div class="number">+91 98765 43210 · 10:20 AM</div>
+        </div>
+        📞
+    </div>
+
+    <div class="call">
+        <div class="avatar">👤</div>
+        <div class="call-info">
+            <div class="name">Rakesh Sharma</div>
+            <div class="number">+91 91234 56789 · 09:45 AM</div>
+        </div>
+        📞
+    </div>
+
+    <div class="call">
+        <div class="avatar">🛡️</div>
+        <div class="call-info">
+            <div class="name spam">Loan Offer</div>
+            <div class="number">+91 99887 66554 · Yesterday</div>
+        </div>
+        📞
+    </div>
+
+    <div class="call">
+        <div class="avatar">👤</div>
+        <div class="call-info">
+            <div class="name">Maa</div>
+            <div class="number">+91 90012 34567 · Yesterday</div>
+        </div>
+        📞
+    </div>
+
+</section>
+
+<nav class="bottom">
+
+    <div class="nav active">
+        <span>🏠</span>
+        Home
+    </div>
+
+    <div class="nav">
+        <span>🕘</span>
+        History
+    </div>
+
+    <div class="nav">
+        <span>🛡️</span>
+        Spam
+    </div>
+
+    <div class="nav">
+        <span>👤</span>
+        Contacts
+    </div>
+
+</nav>
+
+</div>
+
+</body>
+</html>
