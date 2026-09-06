@@ -2,1193 +2,372 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Asim Tech Caller — Caller ID & Spam Protection</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Asim Tech Caller</title>
 <style>
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f7fb;
-  color:#172033
-}
-
-.container{
-  max-width:520px;
-  margin:auto;
-  padding:18px
-}
-
-.header{
-  background:linear-gradient(135deg,#111827,#2563eb);
-  color:#fff;
-  border-radius:24px;
-  padding:22px;
-  margin-bottom:16px;
-  box-shadow:0 12px 30px rgba(37,99,235,.2)
-}
-
-.brand{
-  font-size:28px;
-  font-weight:800
-}
-
-.tag{
-  font-size:13px;
-  opacity:.85;
-  margin-top:5px
-}
-
-.website{
-  font-size:12px;
-  color:#dbeafe;
-  margin-top:6px
-}
-
-.search{
-  display:flex;
-  gap:8px;
-  margin-top:18px
-}
-
-input{
-  flex:1;
-  border:0;
-  border-radius:14px;
-  padding:15px;
-  font-size:16px;
-  outline:none
-}
-
-button{
-  border:0;
-  border-radius:14px;
-  padding:13px 16px;
-  font-weight:700;
-  cursor:pointer
-}
-
-.search button{
-  background:#fff;
-  color:#1d4ed8
-}
-
-.card{
-  background:#fff;
-  border-radius:20px;
-  padding:18px;
-  margin:14px 0;
-  box-shadow:0 6px 20px rgba(15,23,42,.07)
-}
-
-.result{
-  display:none
-}
-
-.score{
-  font-size:42px;
-  font-weight:800;
-  margin-top:4px
-}
-
-.safe{
-  color:#16a34a
-}
-
-.danger{
-  color:#dc2626
-}
-
-.warn{
-  color:#d97706
-}
-
-.badge{
-  display:inline-block;
-  padding:7px 11px;
-  border-radius:999px;
-  background:#fee2e2;
-  color:#b91c1c;
-  font-weight:700;
-  font-size:12px
-}
-
-.infoBox{
-  background:#f8fafc;
-  border:1px solid #e2e8f0;
-  border-radius:14px;
-  padding:13px;
-  margin-top:14px
-}
-
-.infoTitle{
-  font-weight:800;
-  margin-bottom:5px
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:15px
-}
-
-.actions button{
-  background:#eef2ff;
-  color:#3730a3
-}
-
-.safety{
-  background:linear-gradient(135deg,#dbeafe,#eff6ff);
-  border:1px solid #bfdbfe
-}
-
-.item{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 0;
-  border-bottom:1px solid #eee
-}
-
-.item:last-child{
-  border-bottom:0
-}
-
-.small{
-  font-size:12px;
-  color:#64748b
-}
-
-#status{
-  font-size:13px;
-  margin-top:10px;
-  color:#dbeafe
-}
-
-.footer{
-  text-align:center;
-  color:#64748b;
-  font-size:12px;
-  padding:20px
-}
-
-.divider{
-  height:1px;
-  background:#e5e7eb;
-  margin:14px 0
-}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}
+.container{max-width:520px;margin:auto;padding:18px}
+.header{background:linear-gradient(135deg,#111827,#2563eb);color:#fff;border-radius:24px;padding:22px;margin-bottom:16px;box-shadow:0 12px 30px rgba(37,99,235,.2)}
+.brand{font-size:27px;font-weight:800}.tag{font-size:13px;opacity:.9;margin-top:4px}
+.small{font-size:12px;color:#64748b}.header .small{color:#dbeafe}
+.search{display:flex;gap:8px;margin-top:18px}
+input{min-width:0;flex:1;border:0;border-radius:14px;padding:15px;font-size:16px;outline:none}
+button{border:0;border-radius:14px;padding:13px 16px;font-weight:700;cursor:pointer}
+.search button{background:#fff;color:#1d4ed8}
+.card{background:#fff;border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 6px 20px rgba(15,23,42,.07)}
+.result{display:none}.score{font-size:42px;font-weight:800}
+.safe{color:#16a34a}.danger{color:#dc2626}.warn{color:#d97706}
+.badge{display:inline-block;padding:7px 11px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-weight:700;font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.actions button{background:#eef2ff;color:#3730a3}
+.safety{background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe}
+.info{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:12px;margin-top:10px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
+.item:last-child{border-bottom:0}
+#status{font-size:13px;margin-top:10px;color:#dbeafe}.footer{text-align:center;color:#64748b;font-size:12px;padding:20px}
 </style>
 </head>
-
 <body>
-
 <div class="container">
 
-  <!-- HEADER -->
-  <div class="header">
-
-    <div class="brand">
-      Asim Tech Caller
-    </div>
-
-    <div class="tag">
-      Caller ID & Spam Protection
-    </div>
-
-    <div class="website">
-      www.asimtech.in
-    </div>
-
-    <div class="search">
-
-      <input
-        id="numberInput"
-        type="tel"
-        inputmode="numeric"
-        maxlength="10"
-        placeholder="Search 10-digit number"
-      >
-
-      <button id="searchBtn">
-        Search
-      </button>
-
-    </div>
-
-    <div id="status"></div>
-
+<div class="header">
+  <div class="brand">Asim Tech Caller</div>
+  <div class="tag">Caller ID & Spam Protection</div>
+  <div class="small" style="margin-top:5px">www.asimtech.in</div>
+  <div class="search">
+    <input id="numberInput" type="tel" inputmode="numeric" maxlength="10" placeholder="Search 10-digit number">
+    <button id="searchBtn">Search</button>
   </div>
-
-
-  <!-- SAFETY -->
-  <div class="card safety">
-
-    <b>🛡️ Stay Safe with Asim Tech Caller</b>
-
-    <div class="small" style="margin-top:6px">
-      Check a number before trusting unknown callers.
-    </div>
-
-  </div>
-
-
-  <!-- RESULT -->
-  <div id="result" class="card result">
-
-    <div class="small">
-      PHONE NUMBER
-    </div>
-
-    <h2 id="resultNumber" style="margin:5px 0 12px">
-    </h2>
-
-    <div class="small">
-      CALLER NAME
-    </div>
-
-    <h2 id="resultName" style="margin:5px 0">
-    </h2>
-
-    <div id="resultCategory" class="badge">
-    </div>
-
-
-    <!-- SCORE -->
-    <div style="margin-top:18px" class="small">
-      COMMUNITY RISK SCORE
-    </div>
-
-    <div id="resultScore" class="score">
-    </div>
-
-
-    <!-- REPORTS -->
-    <div id="resultReports" class="small">
-    </div>
-
-
-    <!-- SPAM TYPE -->
-    <div class="infoBox">
-
-      <div class="infoTitle">
-        🚨 Spam Type
-      </div>
-
-      <div id="resultSpamType">
-        Unknown
-      </div>
-
-    </div>
-
-
-    <!-- WHY RISKY -->
-    <div class="infoBox">
-
-      <div class="infoTitle">
-        ⚠️ Why is this number risky?
-      </div>
-
-      <div id="resultWhy">
-        No community information available yet.
-      </div>
-
-    </div>
-
-
-    <!-- ACTIONS -->
-    <div class="actions">
-
-      <button id="reportBtn">
-        🚨 Report Spam
-      </button>
-
-      <button id="blockBtn">
-        🚫 Block
-      </button>
-
-      <button id="saveBtn">
-        💾 Save Contact
-      </button>
-
-      <button id="clearBtn">
-        ✕ Clear
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- QUICK ACTIONS -->
-  <div class="card">
-
-    <b>⚡ Quick Actions</b>
-
-    <div class="actions">
-
-      <button onclick="focusSearch()">
-        🔎 Search Number
-      </button>
-
-      <button onclick="reportCurrent()">
-        🚨 Report Spam
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- RECENT CALLS -->
-  <div class="card">
-
-    <b>📞 Recent Calls</b>
-
-    <div id="recent">
-
-      <div class="item">
-
-        <div>
-          <b>9876543210</b>
-
-          <div class="small">
-            Telemarketing
-          </div>
-        </div>
-
-        <span class="danger">
-          92/100
-        </span>
-
-      </div>
-
-
-      <div class="item">
-
-        <div>
-          <b>9123456789</b>
-
-          <div class="small">
-            Safe Number
-          </div>
-        </div>
-
-        <span class="safe">
-          8/100
-        </span>
-
-      </div>
-
-
-      <div class="item">
-
-        <div>
-          <b>9988766554</b>
-
-          <div class="small">
-            Loan Offer
-          </div>
-        </div>
-
-        <span class="danger">
-          88/100
-        </span>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="footer">
-    Asim Tech Caller • Community-powered caller safety
-  </div>
-
+  <div id="status"></div>
 </div>
 
+<div class="card safety">
+  <b>🛡️ Stay Safe with Asim Tech Caller</b>
+  <div class="small" style="margin-top:6px">Check a number before trusting unknown callers.</div>
+</div>
 
-<!-- FIREBASE -->
+<div id="result" class="card result">
+  <div class="small">PHONE NUMBER</div>
+  <h2 id="resultNumber" style="margin:5px 0 12px"></h2>
+
+  <div class="small">CALLER NAME</div>
+  <h2 id="resultName" style="margin:5px 0"></h2>
+
+  <div id="resultCategory" class="badge"></div>
+
+  <div style="margin-top:18px" class="small">COMMUNITY RISK SCORE</div>
+  <div id="resultScore" class="score"></div>
+  <div id="resultReports" class="small"></div>
+
+  <div class="info">
+    🚨 <b>Spam Type</b>
+    <div id="spamType" class="small" style="margin-top:5px"></div>
+  </div>
+
+  <div class="info">
+    ⚠️ <b>Why is this number risky?</b>
+    <div id="whyRisky" class="small" style="margin-top:5px"></div>
+  </div>
+
+  <div class="actions">
+    <button id="reportBtn">🚨 Report Spam</button>
+    <button id="blockBtn">🚫 Block</button>
+    <button id="saveBtn">💾 Save Contact</button>
+    <button id="clearBtn">✕ Clear</button>
+  </div>
+</div>
+
+<div class="card">
+  <b>⚡ Quick Actions</b>
+  <div class="actions">
+    <button onclick="focusSearch()">🔎 Search Number</button>
+    <button onclick="reportCurrent()">🚨 Report Spam</button>
+  </div>
+</div>
+
+<div class="card">
+  <b>📞 Recent Calls</b>
+  <div id="recent"></div>
+</div>
+
+<div class="footer">Asim Tech Caller • Firebase community-powered caller safety</div>
+</div>
+
 <script type="module">
-
-import {
-  initializeApp
-}
+import {initializeApp}
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 
-
 import {
-  getFirestore,
-  doc,
-  getDoc,
-  runTransaction,
-  increment,
-  serverTimestamp
+  getFirestore,doc,getDoc,runTransaction,increment,serverTimestamp
 }
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-
 import {
-  getAuth,
-  signInAnonymously
+  getAuth,signInAnonymously
 }
 from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-
-/* FIREBASE CONFIG */
-
-const firebaseConfig = {
-
-  apiKey:
-  "AIzaSyD725nFGXJm_tJhZYhQPa6ogHNMz5flm6E",
-
-  authDomain:
-  "asim-tech.firebaseapp.com",
-
-  projectId:
-  "asim-tech",
-
-  storageBucket:
-  "asim-tech.firebasestorage.app",
-
-  messagingSenderId:
-  "16953205315",
-
-  appId:
-  "1:16953205315:web:d72affe5ec9c75130a6af6"
-
+const firebaseConfig={
+  apiKey:"AIzaSyD725nFGXJm_tJhZYhQPa6ogHNMz5flm6E",
+  authDomain:"asim-tech.firebaseapp.com",
+  projectId:"asim-tech",
+  storageBucket:"asim-tech.firebasestorage.app",
+  messagingSenderId:"16953205315",
+  appId:"1:16953205315:web:d72affe5ec9c75130a6af6"
 };
 
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
 
-/* START FIREBASE */
+let currentNumber="";
+let currentData=null;
 
-const app =
-  initializeApp(firebaseConfig);
-
-const db =
-  getFirestore(app);
-
-const auth =
-  getAuth(app);
-
-
-/* CURRENT NUMBER */
-
-let currentNumber = "";
-
-let currentData = null;
-
-
-/* DEMO DATA */
-
-const demo = {
-
-  "9876543210": {
-
-    name:"Telemarketing",
-
-    category:"Spam",
-
-    spamType:"Telemarketing",
-
-    score:92,
-
-    reports:127,
-
-    why:
-    "Many community reports indicate repeated telemarketing calls."
-
+const demo={
+  "9876543210":{
+    name:"Telemarketing",category:"Spam Risk",score:100,reports:129,
+    spam:"Spam / Suspicious",
+    why:"129 community reports have been received for this number."
   },
-
-
-  "9123456789": {
-
-    name:"Rakesh Sharma",
-
-    category:"Safe Number",
-
-    spamType:"No known spam",
-
-    score:8,
-
-    reports:2,
-
-    why:
-    "Very few spam reports have been received for this number."
-
+  "9123456789":{
+    name:"Safe Number",category:"Safe Number",score:8,reports:2,
+    spam:"No known spam",
+    why:"Very low community risk score."
   },
-
-
-  "9988766554": {
-
-    name:"Loan Offer",
-
-    category:"Spam",
-
-    spamType:"Loan Scam",
-
-    score:88,
-
-    reports:84,
-
-    why:
-    "Community members have reported repeated loan-offer calls."
-
+  "9988766554":{
+    name:"Loan Offer",category:"Spam Risk",score:88,reports:84,
+    spam:"Loan / Financial Offer",
+    why:"Many community reports indicate unwanted loan-related calls."
   },
-
-
-  "9001234567": {
-
-    name:"Maa",
-
-    category:"Saved Contact",
-
-    spamType:"No known spam",
-
-    score:3,
-
-    reports:0,
-
-    why:
-    "This number has no community spam reports."
-
+  "9001234567":{
+    name:"Saved Contact",category:"Saved Contact",score:3,reports:0,
+    spam:"None",
+    why:"Saved contact with no spam reports."
   }
-
 };
 
+const $=id=>document.getElementById(id);
 
-/* SHORT ID */
-
-const $ =
-  id => document.getElementById(id);
-
-
-/* NORMALIZE */
-
-function normalize(value){
-
-  return (value || "")
-    .replace(/\D/g,"")
-    .slice(-10);
-
+function normalize(v){
+  return(v||"").replace(/\D/g,"").slice(-10);
 }
 
-
-/* STATUS */
-
-function setStatus(text){
-
-  $("status").textContent =
-    text;
-
+function limitScore(v){
+  v=Number(v);
+  if(isNaN(v))v=50;
+  return Math.max(0,Math.min(100,v));
 }
 
-
-/* SCORE LIMIT */
-
-function limitScore(score){
-
-  let value =
-    Number(score ?? 50);
-
-  if(isNaN(value))
-    value = 50;
-
-  return Math.max(
-    0,
-    Math.min(100,value)
-  );
-
+function scoreClass(s){
+  s=limitScore(s);
+  return s>=70?"danger":s>=40?"warn":"safe";
 }
 
-
-/* SCORE COLOR */
-
-function scoreClass(score){
-
-  const safeScore =
-    limitScore(score);
-
-  if(safeScore >= 70)
-    return "danger";
-
-  if(safeScore >= 40)
-    return "warn";
-
-  return "safe";
-
+function setStatus(t){
+  $("status").textContent=t;
 }
 
+function spamDetails(data){
+  const category=(data.category||"").toLowerCase();
+  const name=(data.name||"").toLowerCase();
+  const reports=Number(data.reports||0);
+  const score=limitScore(data.score);
 
-/* AUTOMATIC SPAM TYPE */
-
-function getSpamType(data){
-
-  if(data.spamType)
-    return data.spamType;
-
-  if(data.category)
-    return data.category;
-
-  if(limitScore(data.score) >= 70)
-    return "Spam / Suspicious";
-
-  return "No known spam";
-
-}
-
-
-/* AUTOMATIC REASON */
-
-function getWhy(data){
-
-  if(data.why)
-    return data.why;
-
-  const reports =
-    Number(data.reports || 0);
-
-  const score =
-    limitScore(data.score);
-
-
-  if(reports > 0){
-
-    return (
-      reports +
-      " community report(s) have been received for this number."
-    );
-
+  let spam=data.spam;
+  if(!spam){
+    if(category.includes("loan")||name.includes("loan")) spam="Loan / Financial Offer";
+    else if(category.includes("tele")||name.includes("tele")) spam="Telemarketing / Promotional";
+    else if(score>=70) spam="Spam / Suspicious";
+    else if(score<40) spam="No known spam";
+    else spam="Not yet classified";
   }
 
-
-  if(score >= 70){
-
-    return (
-      "This number has a high community risk score."
-    );
-
+  let why=data.why;
+  if(!why){
+    if(reports>0) why=`${reports} community report(s) have been received for this number.`;
+    else if(score>=70) why="The community risk score is high.";
+    else if(score<40) why="The community risk score is low.";
+    else why="There is not enough community information yet.";
   }
-
-
-  if(score >= 40){
-
-    return (
-      "This number has some risk indicators but limited community information."
-    );
-
-  }
-
-
-  return (
-    "No significant community spam information is available."
-  );
-
+  return {spam,why};
 }
-
-
-/* SHOW RESULT */
 
 function showResult(number,data){
+  currentNumber=number;
+  currentData=data;
 
-  currentNumber =
-    number;
+  const safeScore=limitScore(data.score);
+  const details=spamDetails(data);
 
-  currentData =
-    data;
-
-
-  const safeScore =
-    limitScore(data.score);
-
-
-  $("result").style.display =
-    "block";
-
-
-  $("resultNumber").textContent =
-    number;
-
-
-  $("resultName").textContent =
-    data.name ||
-    "Unknown Number";
-
-
-  $("resultCategory").textContent =
-    data.category ||
-    (
-      safeScore >= 70
-      ? "Spam Risk"
-      : "Unclassified"
-    );
-
-
-  $("resultScore").textContent =
-    safeScore + "/100";
-
-
-  $("resultScore").className =
-    "score " +
-    scoreClass(safeScore);
-
-
-  $("resultReports").textContent =
-    (data.reports || 0) +
-    " community report(s)";
-
-
-  $("resultSpamType").textContent =
-    getSpamType(data);
-
-
-  $("resultWhy").textContent =
-    getWhy(data);
-
+  $("result").style.display="block";
+  $("resultNumber").textContent=number;
+  $("resultName").textContent=data.name||"Unknown Number";
+  $("resultCategory").textContent=data.category||(safeScore>=70?"Spam Risk":"Unclassified");
+  $("resultScore").textContent=safeScore+"/100";
+  $("resultScore").className="score "+scoreClass(safeScore);
+  $("resultReports").textContent=(data.reports||0)+" community report(s)";
+  $("spamType").textContent=details.spam;
+  $("whyRisky").textContent=details.why;
 }
-
-
-/* AUTH */
 
 async function ensureAuth(){
-
-  if(!auth.currentUser){
-
-    await signInAnonymously(auth);
-
-  }
-
+  if(!auth.currentUser) await signInAnonymously(auth);
 }
-
-
-/* SEARCH */
 
 async function searchNumber(){
+  const n=normalize($("numberInput").value);
 
-  const n =
-    normalize(
-      $("numberInput").value
-    );
-
-
-  if(n.length !== 10){
-
-    setStatus(
-      "Please enter a valid 10-digit number."
-    );
-
+  if(n.length!==10){
+    setStatus("Please enter a valid 10-digit number.");
     return;
-
   }
 
-
-  setStatus(
-    "Searching Firebase..."
-  );
-
+  setStatus("Searching Firebase...");
 
   try{
-
-    const ref =
-      doc(
-        db,
-        "numbers",
-        n
-      );
-
-
-    const snap =
-      await getDoc(ref);
-
+    const ref=doc(db,"numbers",n);
+    const snap=await getDoc(ref);
 
     if(snap.exists()){
-
-      showResult(
-        n,
-        snap.data()
-      );
-
+      showResult(n,snap.data());
+    }else if(demo[n]){
+      showResult(n,demo[n]);
+    }else{
+      showResult(n,{
+        name:"Unknown Number",
+        category:"Not yet classified",
+        score:50,
+        reports:0,
+        spam:"Unknown",
+        why:"No community information is available yet."
+      });
     }
 
-    else if(demo[n]){
-
-      showResult(
-        n,
-        demo[n]
-      );
-
-    }
-
-    else{
-
-      showResult(
-
-        n,
-
-        {
-          name:
-          "Unknown Number",
-
-          category:
-          "Not yet classified",
-
-          spamType:
-          "No information yet",
-
-          score:
-          50,
-
-          reports:
-          0,
-
-          why:
-          "No community information is available yet."
-        }
-
-      );
-
-    }
-
-
-    setStatus(
-      "Search complete."
-    );
-
-  }
-
-  catch(error){
-
+    setStatus("Search complete.");
+  }catch(error){
     console.error(error);
 
+    if(demo[n]) showResult(n,demo[n]);
+    else showResult(n,{
+      name:"Unknown Number",
+      category:"Database unavailable",
+      score:50,
+      reports:0,
+      spam:"Unknown",
+      why:"Firebase could not be reached."
+    });
 
-    if(demo[n]){
-
-      showResult(
-        n,
-        demo[n]
-      );
-
-    }
-
-    else{
-
-      showResult(
-
-        n,
-
-        {
-          name:
-          "Unknown Number",
-
-          category:
-          "Database unavailable",
-
-          spamType:
-          "Unknown",
-
-          score:
-          50,
-
-          reports:
-          0,
-
-          why:
-          "The database could not be reached."
-        }
-
-      );
-
-    }
-
-
-    setStatus(
-      "Firebase connection problem."
-    );
-
+    setStatus("Firebase connection problem.");
   }
-
 }
-
-
-/* REPORT SPAM */
 
 async function reportSpam(){
-
   if(!currentNumber){
-
-    setStatus(
-      "Search a number first."
-    );
-
+    setStatus("Search a number first.");
     return;
-
   }
-
 
   try{
-
     await ensureAuth();
 
+    const ref=doc(db,"numbers",currentNumber);
 
-    const ref =
-      doc(
-        db,
-        "numbers",
-        currentNumber
-      );
+    await runTransaction(db,async transaction=>{
+      const snap=await transaction.get(ref);
 
+      if(snap.exists()){
+        const d=snap.data();
+        const oldScore=limitScore(d.score);
+        const newScore=Math.min(100,oldScore+5);
 
-    await runTransaction(
-
-      db,
-
-      async transaction => {
-
-        const snap =
-          await transaction.get(ref);
-
-
-        if(snap.exists()){
-
-          const d =
-            snap.data();
-
-
-          const oldScore =
-            limitScore(
-              d.score
-            );
-
-
-          const newScore =
-            Math.min(
-              100,
-              oldScore + 5
-            );
-
-
-          transaction.update(
-
-            ref,
-
-            {
-
-              reports:
-                increment(1),
-
-              score:
-                newScore,
-
-              updatedAt:
-                serverTimestamp()
-
-            }
-
-          );
-
-        }
-
-        else{
-
-          transaction.set(
-
-            ref,
-
-            {
-
-              name:
-                "Unknown Number",
-
-              category:
-                "Community Report",
-
-              spamType:
-                "User Reported Spam",
-
-              score:
-                65,
-
-              reports:
-                1,
-
-              why:
-                "A community member reported this number as spam.",
-
-              updatedAt:
-                serverTimestamp()
-
-            }
-
-          );
-
-        }
-
+        transaction.update(ref,{
+          reports:increment(1),
+          score:newScore,
+          category:"Spam Risk",
+          updatedAt:serverTimestamp()
+        });
+      }else{
+        transaction.set(ref,{
+          name:"Unknown Number",
+          category:"Spam Risk",
+          score:65,
+          reports:1,
+          spam:"User Reported Spam",
+          why:"This number was reported by the community.",
+          updatedAt:serverTimestamp()
+        });
       }
+    });
 
-    );
+    const snap=await getDoc(ref);
 
+    if(snap.exists()) showResult(currentNumber,snap.data());
 
-    const snap =
-      await getDoc(ref);
-
-
-    if(snap.exists()){
-
-      showResult(
-        currentNumber,
-        snap.data()
-      );
-
-    }
-
-
-    setStatus(
-      "Spam report saved to Firebase."
-    );
-
-  }
-
-  catch(error){
-
+    setStatus("Spam report saved to Firebase.");
+  }catch(error){
     console.error(error);
-
-
-    setStatus(
-      "Report could not be saved."
-    );
-
+    setStatus("Report could not be saved. Check Firebase Auth/Rules.");
   }
-
 }
 
+function renderRecent(){
+  const list=[
+    ["9876543210","Telemarketing",100],
+    ["9123456789","Safe Number",8],
+    ["9988766554","Loan Offer",88]
+  ];
 
-/* SEARCH BUTTON */
+  $("recent").innerHTML=list.map(x=>
+    `<div class="item" data-number="${x[0]}">
+      <div><b>${x[0]}</b><div class="small">${x[1]}</div></div>
+      <span class="${scoreClass(x[2])}">${limitScore(x[2])}/100</span>
+    </div>`
+  ).join("");
 
-$("searchBtn").onclick =
-  searchNumber;
-
-
-/* ENTER KEY */
-
-$("numberInput")
-.addEventListener(
-
-  "keydown",
-
-  event => {
-
-    if(event.key === "Enter"){
-
+  document.querySelectorAll(".item").forEach(el=>{
+    el.onclick=()=>{
+      $("numberInput").value=el.dataset.number;
       searchNumber();
-
-    }
-
-  }
-
-);
-
-
-/* REPORT */
-
-$("reportBtn").onclick =
-  reportSpam;
-
-
-/* BLOCK */
-
-$("blockBtn").onclick = () => {
-
-  if(!currentNumber)
-    return;
-
-
-  localStorage.setItem(
-
-    "blocked_" +
-    currentNumber,
-
-    "1"
-
-  );
-
-
-  setStatus(
-    "Number blocked on this device."
-  );
-
-};
-
-
-/* SAVE CONTACT */
-
-$("saveBtn").onclick = () => {
-
-  if(!currentNumber)
-    return;
-
-
-  localStorage.setItem(
-
-    "saved_" +
-    currentNumber,
-
-    "1"
-
-  );
-
-
-  setStatus(
-    "Number saved on this device."
-  );
-
-};
-
-
-/* CLEAR */
-
-$("clearBtn").onclick = () => {
-
-  $("result").style.display =
-    "none";
-
-  currentNumber =
-    "";
-
-  currentData =
-    null;
-
-  setStatus("");
-
-};
-
-
-/* QUICK SEARCH */
-
-window.focusSearch = () => {
-
-  $("numberInput").focus();
-
-  window.scrollTo({
-
-    top:0,
-
-    behavior:"smooth"
-
+    };
   });
+}
 
+$("searchBtn").onclick=searchNumber;
+
+$("numberInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") searchNumber();
+});
+
+$("reportBtn").onclick=reportSpam;
+
+$("blockBtn").onclick=()=>{
+  if(!currentNumber)return;
+  localStorage.setItem("blocked_"+currentNumber,"1");
+  setStatus("Number blocked on this device.");
 };
 
+$("saveBtn").onclick=()=>{
+  if(!currentNumber)return;
+  localStorage.setItem("saved_"+currentNumber,"1");
+  setStatus("Number saved on this device.");
+};
 
-/* QUICK REPORT */
+$("clearBtn").onclick=()=>{
+  $("result").style.display="none";
+  currentNumber="";
+  currentData=null;
+  setStatus("");
+};
 
-window.reportCurrent =
-  reportSpam;
+window.focusSearch=()=>{
+  $("numberInput").focus();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
 
+window.reportCurrent=reportSpam;
+
+renderRecent();
 </script>
-
 </body>
 </html>
