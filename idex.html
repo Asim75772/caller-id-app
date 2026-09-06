@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asim Tech Caller — Caller Intelligence</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+.container{max-width:560px;margin:auto;padding:16px}
+.header{background:linear-gradient(135deg,#111827,#2563eb);color:#fff;border-radius:24px;padding:22px;margin-bottom:16px;box-shadow:0 12px 30px rgba(37,99,235,.2)}
+.brand{font-size:27px;font-weight:800}.tag{font-size:13px;opacity:.9;margin-top:4px}
+.search{display:flex;gap:8px;margin-top:18px}
+input,select{border:0;border-radius:14px;padding:14px;font-size:15px;outline:none}
+input{flex:1}.search button{background:#fff;color:#1d4ed8}
+button{border:0;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer}
+.card{background:#fff;border-radius:20px;padding:17px;margin:14px 0;box-shadow:0 6px 20px rgba(15,23,42,.07)}
+.result{display:none}.score{font-size:42px;font-weight:800}
+.safe{color:#16a34a}.danger{color:#dc2626}.warn{color:#d97706}
+.badge{display:inline-block;padding:7px 11px;border-radius:999px;background:#fee2e2;color:#b91c1c;font-weight:700;font-size:12px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.actions button{background:#eef2ff;color:#3730a3}
+.safety{background:linear-gradient(135deg,#dbeafe,#eff6ff);border:1px solid #bfdbfe}
+.small{font-size:12px;color:#64748b}
+#status{font-size:13px;margin-top:10px;color:#dbeafe;min-height:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info{background:#f8fafc;border-radius:15px;padding:13px}
+.info b{display:block;margin-bottom:5px}
+.bar{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin-top:8px}
+.bar span{display:block;height:100%;border-radius:99px}
+.trust{font-size:25px;font-weight:800}
+.reason{background:#fff7ed;border:1px solid #fed7aa}
+.warning{background:#fef2f2;border:1px solid #fecaca}
+.reportbox{display:none;background:#f8fafc;border-radius:16px;padding:14px;margin-top:12px}
+.reportbox button{background:#fff;border:1px solid #dbe2ea;color:#334155;margin:4px 2px;padding:9px 10px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+.item:last-child{border-bottom:0}
+.footer{text-align:center;color:#64748b;font-size:12px;padding:20px}
+@media(max-width:430px){.grid2{grid-template-columns:1fr}.search button{padding:12px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="brand">Asim Tech Caller</div>
+    <div class="tag">Caller ID • Spam Protection • Caller Intelligence</div>
+    <div class="small" style="color:#dbeafe;margin-top:5px">www.asimtech.in</div>
+    <div class="search">
+      <input id="numberInput" type="tel" inputmode="numeric" maxlength="10" placeholder="Search 10-digit number">
+      <button id="searchBtn">Search</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div class="card safety">
+    <b>🛡️ Stay Safe with Asim Tech Caller</b>
+    <div class="small" style="margin-top:6px">Know who is calling, why a number is risky and what the community reported.</div>
+  </div>
+
+  <div id="result" class="card result">
+    <div class="small">PHONE NUMBER</div>
+    <h2 id="resultNumber" style="margin:6px 0"></h2>
+
+    <div class="grid2">
+      <div class="info">
+        <div class="small">CALLER NAME</div>
+        <h2 id="resultName" style="margin:5px 0 0"></h2>
+      </div>
+      <div class="info">
+        <div class="small">CATEGORY</div>
+        <div id="resultCategory" class="badge" style="margin-top:7px"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:15px" class="small">COMMUNITY RISK SCORE</div>
+    <div id="resultScore" class="score"></div>
+    <div class="bar"><span id="scoreBar"></span></div>
+    <div id="resultReports" class="small" style="margin-top:7px"></div>
+
+    <div class="grid2" style="margin-top:12px">
+      <div class="info">
+        <b>🤝 Community Trust</b>
+        <div id="trustScore" class="trust"></div>
+        <div id="trustText" class="small"></div>
+      </div>
+      <div class="info">
+        <b>📍 Number Region</b>
+        <div id="region" style="font-weight:700">Indian Mobile Number</div>
+        <div class="small" style="margin-top:4px">Approximate numbering information only</div>
+      </div>
+    </div>
+
+    <div class="info" style="margin-top:10px">
+      <b>💬 WhatsApp</b>
+      <div class="small">Open this number in WhatsApp. This does not confirm whether the number has a WhatsApp account.</div>
+      <button id="whatsappBtn" style="margin-top:9px;background:#dcfce7;color:#166534">Open WhatsApp</button>
+    </div>
+
+    <div class="card reason" style="margin:12px 0 0;padding:14px">
+      <b>🚨 Spam Type</b>
+      <div id="spamType" class="small" style="margin-top:5px"></div>
+    </div>
+
+    <div class="card reason" style="margin:12px 0 0;padding:14px">
+      <b>⚠️ Why is this number risky?</b>
+      <div id="riskReason" class="small" style="margin-top:5px;line-height:1.6"></div>
+    </div>
+
+    <div id="safetyWarning" class="card warning" style="margin:12px 0 0;padding:14px;display:none">
+      <b>⚠️ Safety Warning</b>
+      <div id="warningText" class="small" style="margin-top:5px;line-height:1.5"></div>
+    </div>
+
+    <div class="actions">
+      <button id="reportBtn">🚨 Report Spam</button>
+      <button id="blockBtn">🚫 Block</button>
+      <button id="saveBtn">💾 Save Contact</button>
+      <button id="clearBtn">✕ Clear</button>
+    </div>
+
+    <div id="reportBox" class="reportbox">
+      <b>What happened with this number?</b>
+      <div class="small" style="margin:5px 0 8px">Choose the closest reason. This helps build community evidence.</div>
+      <button data-type="Telemarketing">📢 Telemarketing</button>
+      <button data-type="Loan Scam">💰 Loan Scam</button>
+      <button data-type="Bank/KYC Scam">🏦 Bank/KYC Scam</button>
+      <button data-type="OTP Scam">🔐 OTP Scam</button>
+      <button data-type="Fake Job">💼 Fake Job</button>
+      <button data-type="Courier Scam">📦 Courier Scam</button>
+      <button data-type="Lottery/Prize">🎁 Lottery/Prize</button>
+      <button data-type="Harassment">😡 Harassment</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <b>⚡ Quick Actions</b>
+    <div class="actions">
+      <button onclick="focusSearch()">🔎 Search Number</button>
+      <button onclick="reportCurrent()">🚨 Report Spam</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <b>📞 Recent Calls</b>
+    <div id="recent">
+      <div class="item"><div><b>9876543210</b><div class="small">Telemarketing</div></div><span class="danger">100/100</span></div>
+      <div class="item"><div><b>9123456789</b><div class="small">Safe Number</div></div><span class="safe">8/100</span></div>
+      <div class="item"><div><b>9988766554</b><div class="small">Loan Offer</div></div><span class="danger">88/100</span></div>
+    </div>
+  </div>
+
+  <div class="footer">Asim Tech Caller • Firebase community-powered caller safety</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, runTransaction,
+  increment, serverTimestamp, collection
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyD725nFGXJm_tJhZYhQPa6ogHNMz5flm6E",
+  authDomain:"asim-tech.firebaseapp.com",
+  projectId:"asim-tech",
+  storageBucket:"asim-tech.firebasestorage.app",
+  messagingSenderId:"16953205315",
+  appId:"1:16953205315:web:d72affe5ec9c75130a6af6"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+let currentNumber="";
+let currentData=null;
+
+const demo={
+  "9876543210":{name:"Telemarketing",category:"Spam",score:100,reports:129,spamType:"Telemarketing / Promotional",reasonTypes:{"Telemarketing":82,"Repeated calls":18,"Financial offer":11}},
+  "9123456789":{name:"Safe Number",category:"Safe Number",score:8,reports:2,spamType:"No strong spam signal"},
+  "9988766554":{name:"Loan Offer",category:"Spam",score:88,reports:84,spamType:"Loan / Financial Offer",reasonTypes:{"Loan Scam":61,"Telemarketing":17,"Repeated calls":6}},
+  "9001234567":{name:"Maa",category:"Saved Contact",score:3,reports:0,spamType:"Not classified"}
+};
+
+const $=id=>document.getElementById(id);
+
+function normalize(value){return(value||"").replace(/\D/g,"").slice(-10)}
+function setStatus(text){$("status").textContent=text}
+function limitScore(score){
+  let v=Number(score??50);
+  if(isNaN(v))v=50;
+  return Math.max(0,Math.min(100,v));
+}
+function scoreClass(score){return score>=70?"danger":score>=40?"warn":"safe"}
+
+function getSpamType(data){
+  if(data.spamType) return data.spamType;
+  const c=(data.category||"").toLowerCase(), n=(data.name||"").toLowerCase();
+  if(n.includes("loan")) return "Loan / Financial Offer";
+  if(n.includes("telemarketing")||c.includes("spam")) return "Telemarketing / Promotional";
+  if(c.includes("community")) return "Community Report";
+  if(c.includes("safe")) return "No strong spam signal";
+  return "Not yet classified";
+}
+
+function getRegion(number){
+  // Exact live location cannot be derived from a mobile number.
+  // This function intentionally gives only broad numbering information.
+  return number.startsWith("9")||number.startsWith("8")||number.startsWith("7")
+    ? "Indian Mobile Number" : "Indian Number";
+}
+
+function getTrust(score,reports){
+  if(reports===0) return {value:"—",text:"Not enough community evidence"};
+  const trust=Math.max(0,100-score);
+  if(trust>=70) return {value:trust+"%",text:"Mostly trusted by community"};
+  if(trust>=40) return {value:trust+"%",text:"Mixed community feedback"};
+  return {value:trust+"%",text:"Low community trust"};
+}
+
+function buildRiskReason(data,score,reports){
+  const parts=[];
+  if(reports>0) parts.push(reports+" community report(s) have been received.");
+  if(data.reasonTypes){
+    const entries=Object.entries(data.reasonTypes).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,3);
+    if(entries.length) parts.push(entries.map(x=>x[0]+" ("+x[1]+" reports)").join(", ")+".");
+  }
+  if(score>=80) parts.push("The community risk score is very high.");
+  else if(score>=70) parts.push("The community risk score is high.");
+  else if(score>=40) parts.push("The number has a moderate risk signal.");
+  if(!parts.length) parts.push("No significant community report has been recorded yet.");
+  return parts.join(" ");
+}
+
+function showResult(number,data){
+  currentNumber=number; currentData=data;
+  const score=limitScore(data.score), reports=Number(data.reports||0);
+  $("result").style.display="block";
+  $("resultNumber").textContent=number;
+  $("resultName").textContent=data.name||"Unknown Number";
+  $("resultCategory").textContent=data.category||(score>=70?"Spam Risk":"Unclassified");
+  $("resultScore").textContent=score+"/100";
+  $("resultScore").className="score "+scoreClass(score);
+  $("scoreBar").style.width=score+"%";
+  $("resultReports").textContent=reports+" community report(s)";
+  $("spamType").textContent=getSpamType(data);
+  $("region").textContent=data.region||getRegion(number);
+
+  const trust=getTrust(score,reports);
+  $("trustScore").textContent=trust.value;
+  $("trustText").textContent=trust.text;
+  $("riskReason").textContent=buildRiskReason(data,score,reports);
+
+  if(score>=70){
+    $("safetyWarning").style.display="block";
+    $("warningText").textContent="Do not share OTP, PIN, CVV, passwords or banking details. If the caller claims to be from a bank, courier, police or government office, verify independently using an official number.";
+  }else{
+    $("safetyWarning").style.display="none";
+  }
+}
+
+async function ensureAuth(){
+  if(!auth.currentUser) await signInAnonymously(auth);
+}
+
+async function searchNumber(){
+  const n=normalize($("numberInput").value);
+  if(n.length!==10){setStatus("Please enter a valid 10-digit number.");return}
+  setStatus("Searching Firebase...");
+  $("reportBox").style.display="none";
+  try{
+    const ref=doc(db,"numbers",n), snap=await getDoc(ref);
+    if(snap.exists()) showResult(n,snap.data());
+    else if(demo[n]) showResult(n,demo[n]);
+    else showResult(n,{name:"Unknown Number",category:"Not yet classified",score:50,reports:0});
+    setStatus("Search complete.");
+  }catch(error){
+    console.error(error);
+    if(demo[n]) showResult(n,demo[n]);
+    else showResult(n,{name:"Unknown Number",category:"Database unavailable",score:50,reports:0});
+    setStatus("Firebase connection problem.");
+  }
+}
+
+function openReportBox(){
+  if(!currentNumber){setStatus("Search a number first.");return}
+  $("reportBox").style.display=$("reportBox").style.display==="block"?"none":"block";
+}
+
+async function reportSpam(type="Community Report"){
+  if(!currentNumber){setStatus("Search a number first.");return}
+  try{
+    await ensureAuth();
+    const numberRef=doc(db,"numbers",currentNumber);
+    const reportRef=doc(collection(db,"numbers",currentNumber,"reports"));
+    await runTransaction(db,async transaction=>{
+      const snap=await transaction.get(numberRef);
+      if(snap.exists()){
+        const d=snap.data(), oldScore=limitScore(d.score), newScore=Math.min(100,oldScore+5);
+        transaction.update(numberRef,{reports:increment(1),score:newScore,updatedAt:serverTimestamp()});
+      }else{
+        transaction.set(numberRef,{name:"Unknown Number",category:"Community Report",score:65,reports:1,updatedAt:serverTimestamp()});
+      }
+      transaction.set(reportRef,{
+        type:"spam",reason:type,uid:auth.currentUser.uid,
+        number:currentNumber,createdAt:serverTimestamp()
+      });
+    });
+    const updated=await getDoc(numberRef);
+    if(updated.exists()) showResult(currentNumber,updated.data());
+    $("reportBox").style.display="none";
+    setStatus("Report saved: "+type);
+  }catch(error){
+    console.error(error);
+    setStatus("Report could not be saved. Check Firebase Rules for the reports subcollection.");
+  }
+}
+
+$("searchBtn").onclick=searchNumber;
+$("numberInput").addEventListener("keydown",e=>{if(e.key==="Enter")searchNumber()});
+$("reportBtn").onclick=openReportBox;
+
+document.querySelectorAll("#reportBox button").forEach(btn=>{
+  btn.onclick=()=>reportSpam(btn.dataset.type);
+});
+
+$("blockBtn").onclick=()=>{
+  if(!currentNumber){setStatus("Search a number first.");return}
+  localStorage.setItem("blocked_"+currentNumber,"1");
+  setStatus("Number blocked on this device.");
+};
+
+$("saveBtn").onclick=()=>{
+  if(!currentNumber){setStatus("Search a number first.");return}
+  localStorage.setItem("saved_"+currentNumber,"1");
+  setStatus("Number saved on this device.");
+};
+
+$("whatsappBtn").onclick=()=>{
+  if(!currentNumber){setStatus("Search a number first.");return}
+  window.open("https://wa.me/91"+currentNumber,"_blank");
+};
+
+$("clearBtn").onclick=()=>{
+  $("result").style.display="none"; currentNumber=""; currentData=null; setStatus("");
+};
+
+window.focusSearch=()=>{
+  $("numberInput").focus();
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+window.reportCurrent=openReportBox;
+</script>
+</body>
+</html>
