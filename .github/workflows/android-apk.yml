@@ -69,8 +69,8 @@ jobs:
                   applicationId 'com.asimtech.caller'
                   minSdk 29
                   targetSdk 35
-                  versionCode 3
-                  versionName '3.0'
+                  versionCode 4
+                  versionName '4.0'
               }
           }
           EOF
@@ -139,6 +139,7 @@ jobs:
           import android.widget.Button;
           import android.widget.LinearLayout;
           import android.widget.TextView;
+          import android.widget.Toast;
 
           public class MainActivity extends Activity {
 
@@ -159,7 +160,7 @@ jobs:
                   title.setPadding(10, 20, 10, 20);
 
                   Button enableButton = new Button(this);
-                  enableButton.setText("Enable Caller ID");
+                  enableButton.setText("ENABLE CALLER ID");
 
                   enableButton.setOnClickListener(v -> {
                       requestNotificationPermission();
@@ -210,34 +211,72 @@ jobs:
 
               private void requestCallScreeningRole() {
 
-                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                  if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
-                      RoleManager roleManager =
-                          (RoleManager) getSystemService(ROLE_SERVICE);
+                      Toast.makeText(
+                          this,
+                          "Android 10 or higher is required",
+                          Toast.LENGTH_LONG
+                      ).show();
 
-                      if (roleManager == null) {
-                          return;
-                      }
-
-                      if (!roleManager.isRoleAvailable(
-                              RoleManager.ROLE_CALL_SCREENING)) {
-                          return;
-                      }
-
-                      if (!roleManager.isRoleHeld(
-                              RoleManager.ROLE_CALL_SCREENING)) {
-
-                          Intent intent =
-                              roleManager.createRequestRoleIntent(
-                                  RoleManager.ROLE_CALL_SCREENING
-                              );
-
-                          startActivityForResult(
-                              intent,
-                              ROLE_REQUEST_CODE
-                          );
-                      }
+                      return;
                   }
+
+                  RoleManager roleManager =
+                      (RoleManager) getSystemService(ROLE_SERVICE);
+
+                  if (roleManager == null) {
+
+                      Toast.makeText(
+                          this,
+                          "Role Manager is not available",
+                          Toast.LENGTH_LONG
+                      ).show();
+
+                      return;
+                  }
+
+                  boolean available =
+                      roleManager.isRoleAvailable(
+                          RoleManager.ROLE_CALL_SCREENING
+                      );
+
+                  if (!available) {
+
+                      Toast.makeText(
+                          this,
+                          "Call Screening is not available on this phone",
+                          Toast.LENGTH_LONG
+                      ).show();
+
+                      return;
+                  }
+
+                  boolean alreadyEnabled =
+                      roleManager.isRoleHeld(
+                          RoleManager.ROLE_CALL_SCREENING
+                      );
+
+                  if (alreadyEnabled) {
+
+                      Toast.makeText(
+                          this,
+                          "Caller ID is already enabled",
+                          Toast.LENGTH_LONG
+                      ).show();
+
+                      return;
+                  }
+
+                  Intent intent =
+                      roleManager.createRequestRoleIntent(
+                          RoleManager.ROLE_CALL_SCREENING
+                      );
+
+                  startActivityForResult(
+                      intent,
+                      ROLE_REQUEST_CODE
+                  );
               }
 
               private void requestNotificationPermission() {
@@ -254,6 +293,39 @@ jobs:
                               },
                               NOTIFICATION_REQUEST_CODE
                           );
+                      }
+                  }
+              }
+
+              @Override
+              protected void onActivityResult(
+                      int requestCode,
+                      int resultCode,
+                      Intent data) {
+
+                  super.onActivityResult(
+                      requestCode,
+                      resultCode,
+                      data
+                  );
+
+                  if (requestCode == ROLE_REQUEST_CODE) {
+
+                      if (resultCode == RESULT_OK) {
+
+                          Toast.makeText(
+                              this,
+                              "Caller ID Enabled Successfully",
+                              Toast.LENGTH_LONG
+                          ).show();
+
+                      } else {
+
+                          Toast.makeText(
+                              this,
+                              "Caller ID permission was not enabled",
+                              Toast.LENGTH_LONG
+                          ).show();
                       }
                   }
               }
@@ -309,13 +381,9 @@ jobs:
 
                   showCallerNotification(number);
 
-                  CallResponse response =
-                      new CallResponse.Builder()
-                          .build();
-
                   respondToCall(
                       callDetails,
-                      response
+                      new CallResponse.Builder().build()
                   );
               }
 
@@ -339,8 +407,7 @@ jobs:
                           new NotificationChannel(
                               CHANNEL_ID,
                               "Asim Tech Caller",
-                              NotificationManager
-                                  .IMPORTANCE_HIGH
+                              NotificationManager.IMPORTANCE_HIGH
                           );
 
                       channel.setDescription(
@@ -371,8 +438,7 @@ jobs:
 
                   builder
                       .setSmallIcon(
-                          android.R.drawable
-                              .sym_call_incoming
+                          android.R.drawable.sym_call_incoming
                       )
                       .setContentTitle(
                           "Asim Tech Caller"
@@ -413,5 +479,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Asim-Tech-Caller-APK-v3
+          name: Asim-Tech-Caller-APK-v4
           path: app/build/outputs/apk/debug/app-debug.apk
