@@ -69,8 +69,8 @@ jobs:
                   applicationId 'com.asimtech.caller'
                   minSdk 29
                   targetSdk 35
-                  versionCode 4
-                  versionName '4.0'
+                  versionCode 5
+                  versionName '5.0'
               }
           }
           EOF
@@ -110,7 +110,8 @@ jobs:
                   <service
                       android:name=".CallerScreeningService"
                       android:permission="android.permission.BIND_SCREENING_SERVICE"
-                      android:exported="true">
+                      android:exported="true"
+                      android:label="Asim Tech Caller">
 
                       <intent-filter>
                           <action android:name="android.telecom.CallScreeningService" />
@@ -162,10 +163,9 @@ jobs:
                   Button enableButton = new Button(this);
                   enableButton.setText("ENABLE CALLER ID");
 
-                  enableButton.setOnClickListener(v -> {
-                      requestNotificationPermission();
-                      requestCallScreeningRole();
-                  });
+                  enableButton.setOnClickListener(v ->
+                      requestCallScreeningRole()
+                  );
 
                   layout.addView(
                       title,
@@ -205,8 +205,6 @@ jobs:
                   );
 
                   setContentView(layout);
-
-                  requestNotificationPermission();
               }
 
               private void requestCallScreeningRole() {
@@ -236,12 +234,8 @@ jobs:
                       return;
                   }
 
-                  boolean available =
-                      roleManager.isRoleAvailable(
-                          RoleManager.ROLE_CALL_SCREENING
-                      );
-
-                  if (!available) {
+                  if (!roleManager.isRoleAvailable(
+                          RoleManager.ROLE_CALL_SCREENING)) {
 
                       Toast.makeText(
                           this,
@@ -252,18 +246,16 @@ jobs:
                       return;
                   }
 
-                  boolean alreadyEnabled =
-                      roleManager.isRoleHeld(
-                          RoleManager.ROLE_CALL_SCREENING
-                      );
-
-                  if (alreadyEnabled) {
+                  if (roleManager.isRoleHeld(
+                          RoleManager.ROLE_CALL_SCREENING)) {
 
                       Toast.makeText(
                           this,
                           "Caller ID is already enabled",
                           Toast.LENGTH_LONG
                       ).show();
+
+                      requestNotificationPermission();
 
                       return;
                   }
@@ -318,6 +310,8 @@ jobs:
                               "Caller ID Enabled Successfully",
                               Toast.LENGTH_LONG
                           ).show();
+
+                          requestNotificationPermission();
 
                       } else {
 
@@ -410,13 +404,7 @@ jobs:
                               NotificationManager.IMPORTANCE_HIGH
                           );
 
-                      channel.setDescription(
-                          "Incoming caller identification"
-                      );
-
-                      manager.createNotificationChannel(
-                          channel
-                      );
+                      manager.createNotificationChannel(channel);
                   }
 
                   Notification.Builder builder;
@@ -424,16 +412,14 @@ jobs:
                   if (Build.VERSION.SDK_INT >=
                       Build.VERSION_CODES.O) {
 
-                      builder =
-                          new Notification.Builder(
-                              this,
-                              CHANNEL_ID
-                          );
+                      builder = new Notification.Builder(
+                          this,
+                          CHANNEL_ID
+                      );
 
                   } else {
 
-                      builder =
-                          new Notification.Builder(this);
+                      builder = new Notification.Builder(this);
                   }
 
                   builder
@@ -452,8 +438,7 @@ jobs:
                                   "Incoming call from "
                                   + number
                                   + "\n\n"
-                                  + "Open Asim Tech Caller "
-                                  + "to check caller information."
+                                  + "Asim Tech Caller detected this call."
                               )
                       )
                       .setAutoCancel(true)
@@ -479,5 +464,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Asim-Tech-Caller-APK-v4
+          name: Asim-Tech-Caller-APK-v5
           path: app/build/outputs/apk/debug/app-debug.apk
