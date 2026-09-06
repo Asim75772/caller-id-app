@@ -4,12 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Asim Tech — Caller ID & Spam Protection</title>
+<title>Asim Tech Caller — Caller ID & Spam Protection</title>
 
 <style>
-*{
-  box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -34,14 +32,20 @@ body{
 }
 
 .brand{
-  font-size:26px;
+  font-size:28px;
   font-weight:800
 }
 
 .tag{
   font-size:13px;
   opacity:.85;
-  margin-top:4px
+  margin-top:5px
+}
+
+.website{
+  font-size:12px;
+  color:#dbeafe;
+  margin-top:6px
 }
 
 .search{
@@ -86,7 +90,8 @@ button{
 
 .score{
   font-size:42px;
-  font-weight:800
+  font-weight:800;
+  margin-top:4px
 }
 
 .safe{
@@ -109,6 +114,19 @@ button{
   color:#b91c1c;
   font-weight:700;
   font-size:12px
+}
+
+.infoBox{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  padding:13px;
+  margin-top:14px
+}
+
+.infoTitle{
+  font-weight:800;
+  margin-bottom:5px
 }
 
 .actions{
@@ -157,6 +175,12 @@ button{
   font-size:12px;
   padding:20px
 }
+
+.divider{
+  height:1px;
+  background:#e5e7eb;
+  margin:14px 0
+}
 </style>
 </head>
 
@@ -167,13 +191,15 @@ button{
   <!-- HEADER -->
   <div class="header">
 
-    <div class="brand">Asim Tech</div>
+    <div class="brand">
+      Asim Tech Caller
+    </div>
 
     <div class="tag">
       Caller ID & Spam Protection
     </div>
 
-    <div class="small" style="color:#dbeafe;margin-top:5px">
+    <div class="website">
       www.asimtech.in
     </div>
 
@@ -201,7 +227,7 @@ button{
   <!-- SAFETY -->
   <div class="card safety">
 
-    <b>🛡️ Stay Safe with Asim Tech</b>
+    <b>🛡️ Stay Safe with Asim Tech Caller</b>
 
     <div class="small" style="margin-top:6px">
       Check a number before trusting unknown callers.
@@ -214,26 +240,66 @@ button{
   <div id="result" class="card result">
 
     <div class="small">
-      NUMBER
+      PHONE NUMBER
     </div>
 
-    <h2 id="resultName" style="margin:6px 0">
+    <h2 id="resultNumber" style="margin:5px 0 12px">
+    </h2>
+
+    <div class="small">
+      CALLER NAME
+    </div>
+
+    <h2 id="resultName" style="margin:5px 0">
     </h2>
 
     <div id="resultCategory" class="badge">
     </div>
 
-    <div style="margin-top:15px" class="small">
+
+    <!-- SCORE -->
+    <div style="margin-top:18px" class="small">
       COMMUNITY RISK SCORE
     </div>
 
     <div id="resultScore" class="score">
     </div>
 
+
+    <!-- REPORTS -->
     <div id="resultReports" class="small">
     </div>
 
 
+    <!-- SPAM TYPE -->
+    <div class="infoBox">
+
+      <div class="infoTitle">
+        🚨 Spam Type
+      </div>
+
+      <div id="resultSpamType">
+        Unknown
+      </div>
+
+    </div>
+
+
+    <!-- WHY RISKY -->
+    <div class="infoBox">
+
+      <div class="infoTitle">
+        ⚠️ Why is this number risky?
+      </div>
+
+      <div id="resultWhy">
+        No community information available yet.
+      </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
     <div class="actions">
 
       <button id="reportBtn">
@@ -307,7 +373,7 @@ button{
           <b>9123456789</b>
 
           <div class="small">
-            Rakesh Sharma
+            Safe Number
           </div>
         </div>
 
@@ -340,7 +406,7 @@ button{
 
 
   <div class="footer">
-    Asim Tech • Community-powered caller safety
+    Asim Tech Caller • Community-powered caller safety
   </div>
 
 </div>
@@ -398,7 +464,7 @@ const firebaseConfig = {
 };
 
 
-/* FIREBASE START */
+/* START FIREBASE */
 
 const app =
   initializeApp(firebaseConfig);
@@ -422,31 +488,74 @@ let currentData = null;
 const demo = {
 
   "9876543210": {
+
     name:"Telemarketing",
+
     category:"Spam",
+
+    spamType:"Telemarketing",
+
     score:92,
-    reports:127
+
+    reports:127,
+
+    why:
+    "Many community reports indicate repeated telemarketing calls."
+
   },
+
 
   "9123456789": {
+
     name:"Rakesh Sharma",
+
     category:"Safe Number",
+
+    spamType:"No known spam",
+
     score:8,
-    reports:2
+
+    reports:2,
+
+    why:
+    "Very few spam reports have been received for this number."
+
   },
+
 
   "9988766554": {
+
     name:"Loan Offer",
+
     category:"Spam",
+
+    spamType:"Loan Scam",
+
     score:88,
-    reports:84
+
+    reports:84,
+
+    why:
+    "Community members have reported repeated loan-offer calls."
+
   },
 
+
   "9001234567": {
+
     name:"Maa",
+
     category:"Saved Contact",
+
+    spamType:"No known spam",
+
     score:3,
-    reports:0
+
+    reports:0,
+
+    why:
+    "This number has no community spam reports."
+
   }
 
 };
@@ -458,7 +567,7 @@ const $ =
   id => document.getElementById(id);
 
 
-/* NORMALIZE NUMBER */
+/* NORMALIZE */
 
 function normalize(value){
 
@@ -473,29 +582,13 @@ function normalize(value){
 
 function setStatus(text){
 
-  $("status").textContent = text;
+  $("status").textContent =
+    text;
 
 }
 
 
-/* SCORE COLOR */
-
-function scoreClass(score){
-
-  if(score >= 70)
-    return "danger";
-
-  if(score >= 40)
-    return "warn";
-
-  return "safe";
-
-}
-
-
-/* IMPORTANT:
-   SCORE MUST ALWAYS BE 0-100
-*/
+/* SCORE LIMIT */
 
 function limitScore(score){
 
@@ -513,6 +606,91 @@ function limitScore(score){
 }
 
 
+/* SCORE COLOR */
+
+function scoreClass(score){
+
+  const safeScore =
+    limitScore(score);
+
+  if(safeScore >= 70)
+    return "danger";
+
+  if(safeScore >= 40)
+    return "warn";
+
+  return "safe";
+
+}
+
+
+/* AUTOMATIC SPAM TYPE */
+
+function getSpamType(data){
+
+  if(data.spamType)
+    return data.spamType;
+
+  if(data.category)
+    return data.category;
+
+  if(limitScore(data.score) >= 70)
+    return "Spam / Suspicious";
+
+  return "No known spam";
+
+}
+
+
+/* AUTOMATIC REASON */
+
+function getWhy(data){
+
+  if(data.why)
+    return data.why;
+
+  const reports =
+    Number(data.reports || 0);
+
+  const score =
+    limitScore(data.score);
+
+
+  if(reports > 0){
+
+    return (
+      reports +
+      " community report(s) have been received for this number."
+    );
+
+  }
+
+
+  if(score >= 70){
+
+    return (
+      "This number has a high community risk score."
+    );
+
+  }
+
+
+  if(score >= 40){
+
+    return (
+      "This number has some risk indicators but limited community information."
+    );
+
+  }
+
+
+  return (
+    "No significant community spam information is available."
+  );
+
+}
+
+
 /* SHOW RESULT */
 
 function showResult(number,data){
@@ -524,14 +702,16 @@ function showResult(number,data){
     data;
 
 
-  /* LIMIT SCORE */
-
   const safeScore =
     limitScore(data.score);
 
 
   $("result").style.display =
     "block";
+
+
+  $("resultNumber").textContent =
+    number;
 
 
   $("resultName").textContent =
@@ -561,6 +741,14 @@ function showResult(number,data){
     (data.reports || 0) +
     " community report(s)";
 
+
+  $("resultSpamType").textContent =
+    getSpamType(data);
+
+
+  $("resultWhy").textContent =
+    getWhy(data);
+
 }
 
 
@@ -577,7 +765,7 @@ async function ensureAuth(){
 }
 
 
-/* SEARCH NUMBER */
+/* SEARCH */
 
 async function searchNumber(){
 
@@ -638,13 +826,29 @@ async function searchNumber(){
     else{
 
       showResult(
+
         n,
+
         {
-          name:"Unknown Number",
-          category:"Not yet classified",
-          score:50,
-          reports:0
+          name:
+          "Unknown Number",
+
+          category:
+          "Not yet classified",
+
+          spamType:
+          "No information yet",
+
+          score:
+          50,
+
+          reports:
+          0,
+
+          why:
+          "No community information is available yet."
         }
+
       );
 
     }
@@ -673,13 +877,29 @@ async function searchNumber(){
     else{
 
       showResult(
+
         n,
+
         {
-          name:"Unknown Number",
-          category:"Database unavailable",
-          score:50,
-          reports:0
+          name:
+          "Unknown Number",
+
+          category:
+          "Database unavailable",
+
+          spamType:
+          "Unknown",
+
+          score:
+          50,
+
+          reports:
+          0,
+
+          why:
+          "The database could not be reached."
         }
+
       );
 
     }
@@ -723,7 +943,9 @@ async function reportSpam(){
 
 
     await runTransaction(
+
       db,
+
       async transaction => {
 
         const snap =
@@ -742,8 +964,6 @@ async function reportSpam(){
             );
 
 
-          /* ADD 5 BUT NEVER ABOVE 100 */
-
           const newScore =
             Math.min(
               100,
@@ -752,8 +972,11 @@ async function reportSpam(){
 
 
           transaction.update(
+
             ref,
+
             {
+
               reports:
                 increment(1),
 
@@ -762,7 +985,9 @@ async function reportSpam(){
 
               updatedAt:
                 serverTimestamp()
+
             }
+
           );
 
         }
@@ -770,13 +995,19 @@ async function reportSpam(){
         else{
 
           transaction.set(
+
             ref,
+
             {
+
               name:
                 "Unknown Number",
 
               category:
                 "Community Report",
+
+              spamType:
+                "User Reported Spam",
 
               score:
                 65,
@@ -784,18 +1015,22 @@ async function reportSpam(){
               reports:
                 1,
 
+              why:
+                "A community member reported this number as spam.",
+
               updatedAt:
                 serverTimestamp()
+
             }
+
           );
 
         }
 
       }
+
     );
 
-
-    /* GET UPDATED DATA */
 
     const snap =
       await getDoc(ref);
@@ -841,7 +1076,9 @@ $("searchBtn").onclick =
 
 $("numberInput")
 .addEventListener(
+
   "keydown",
+
   event => {
 
     if(event.key === "Enter"){
@@ -851,10 +1088,11 @@ $("numberInput")
     }
 
   }
+
 );
 
 
-/* REPORT BUTTON */
+/* REPORT */
 
 $("reportBtn").onclick =
   reportSpam;
@@ -869,8 +1107,12 @@ $("blockBtn").onclick = () => {
 
 
   localStorage.setItem(
-    "blocked_" + currentNumber,
+
+    "blocked_" +
+    currentNumber,
+
     "1"
+
   );
 
 
@@ -881,7 +1123,7 @@ $("blockBtn").onclick = () => {
 };
 
 
-/* SAVE */
+/* SAVE CONTACT */
 
 $("saveBtn").onclick = () => {
 
@@ -890,8 +1132,12 @@ $("saveBtn").onclick = () => {
 
 
   localStorage.setItem(
-    "saved_" + currentNumber,
+
+    "saved_" +
+    currentNumber,
+
     "1"
+
   );
 
 
@@ -927,8 +1173,11 @@ window.focusSearch = () => {
   $("numberInput").focus();
 
   window.scrollTo({
+
     top:0,
+
     behavior:"smooth"
+
   });
 
 };
