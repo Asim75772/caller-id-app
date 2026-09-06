@@ -177,9 +177,9 @@ let currentNumber="";
 let currentData=null;
 
 const demo={
-  "9876543210":{name:"Telemarketing",category:"Spam",score:100,reports:129,spamType:"Telemarketing / Promotional",reasonTypes:{"Telemarketing":82,"Repeated calls":18,"Financial offer":11}},
+  "9876543210":{name:"Telemarketing",category:"Spam",score:100,reports:129,spamType:"Telemarketing / Promotional",reasonCounts:{telemarketing:82,other:18}},
   "9123456789":{name:"Safe Number",category:"Safe Number",score:8,reports:2,spamType:"No strong spam signal"},
-  "9988766554":{name:"Loan Offer",category:"Spam",score:88,reports:84,spamType:"Loan / Financial Offer",reasonTypes:{"Loan Scam":61,"Telemarketing":17,"Repeated calls":6}},
+  "9988766554":{name:"Loan Offer",category:"Spam",score:88,reports:84,spamType:"Loan / Financial Offer",reasonCounts:{loanScam:61,telemarketing:17,other:6}},
   "9001234567":{name:"Maa",category:"Saved Contact",score:3,reports:0,spamType:"Not classified"}
 };
 
@@ -222,9 +222,13 @@ function getTrust(score,reports){
 function buildRiskReason(data,score,reports){
   const parts=[];
   if(reports>0) parts.push(reports+" community report(s) have been received.");
-  if(data.reasonTypes){
-    const entries=Object.entries(data.reasonTypes).sort((a,b)=>Number(b[1])-Number(a[1])).slice(0,3);
-    if(entries.length) parts.push(entries.map(x=>x[0]+" ("+x[1]+" reports)").join(", ")+".");
+  const counts=getReasonCounts(data);
+  const entries=Object.entries(counts)
+    .filter(x=>Number(x[1])>0)
+    .sort((a,b)=>Number(b[1])-Number(a[1]))
+    .slice(0,3);
+  if(entries.length){
+    parts.push(entries.map(x=>reasonLabel(x[0])+" ("+x[1]+" reports)").join(", ")+" reported.");
   }
   if(score>=80) parts.push("The community risk score is very high.");
   else if(score>=70) parts.push("The community risk score is high.");
@@ -288,6 +292,43 @@ function openReportBox(){
   $("reportBox").style.display=$("reportBox").style.display==="block"?"none":"block";
 }
 
+function reasonKey(type){
+  const map={
+    "Telemarketing":"telemarketing",
+    "Loan Scam":"loanScam",
+    "Bank/KYC Scam":"bankKycScam",
+    "OTP Scam":"otpScam",
+    "Fake Job":"fakeJob",
+    "Courier Scam":"courierScam",
+    "Lottery/Prize":"lotteryPrize",
+    "Harassment":"harassment",
+    "Community Report":"communityReport"
+  };
+  return map[type]||"other";
+}
+
+function getReasonCounts(data){
+  if(data.reasonCounts) return data.reasonCounts;
+  if(data.reasonTypes) return data.reasonTypes;
+  return {};
+}
+
+function reasonLabel(key){
+  const map={
+    telemarketing:"Telemarketing",
+    loanScam:"Loan Scam",
+    bankKycScam:"Bank/KYC Scam",
+    otpScam:"OTP Scam",
+    fakeJob:"Fake Job",
+    courierScam:"Courier Scam",
+    lotteryPrize:"Lottery/Prize",
+    harassment:"Harassment",
+    communityReport:"Community Report",
+    other:"Other"
+  };
+  return map[key]||key;
+}
+
 async function reportSpam(type="Community Report"){
   if(!currentNumber){setStatus("Search a number first.");return}
   try{
@@ -298,9 +339,24 @@ async function reportSpam(type="Community Report"){
       const snap=await transaction.get(numberRef);
       if(snap.exists()){
         const d=snap.data(), oldScore=limitScore(d.score), newScore=Math.min(100,oldScore+5);
-        transaction.update(numberRef,{reports:increment(1),score:newScore,updatedAt:serverTimestamp()});
+        const counts=Object.assign({},d.reasonCounts||{});
+        const key=reasonKey(type);
+        counts[key]=Number(counts[key]||0)+1;
+        transaction.update(numberRef,{
+          reports:increment(1),
+          score:newScore,
+          reasonCounts:counts,
+          updatedAt:serverTimestamp()
+        });
       }else{
-        transaction.set(numberRef,{name:"Unknown Number",category:"Community Report",score:65,reports:1,updatedAt:serverTimestamp()});
+        transaction.set(numberRef,{
+          name:"Unknown Number",
+          category:"Community Report",
+          score:65,
+          reports:1,
+          reasonCounts:{[reasonKey(type)]:1},
+          updatedAt:serverTimestamp()
+        });
       }
       transaction.set(reportRef,{
         type:"spam",reason:type,uid:auth.currentUser.uid,
